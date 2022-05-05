@@ -1,86 +1,214 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import puppeteer from 'puppeteer'
 
-const Home: NextPage = () => {
+const IGNORE_LIST = ['google-analytics.com', 'doubleclick.net', 'sentry.io']
+
+const SITES = [
+  'https://info.uniswap.org/',
+  'https://pancakeswap.finance/info',
+  'https://curve.fi/combinedstats',
+  'https://app.anchorprotocol.com/',
+  'https://www.convexfinance.com/stake',
+  'https://app.aave.com/markets/',
+  'https://compound.finance/markets',
+]
+
+// Do NOT include .js otherwise data requests are not intercepted
+const ABORT_RESOURCE_SUFFIXES: string[] = [
+  '.png',
+  '.jpg',
+  '.css',
+  '.svg',
+  '.ico',
+]
+
+type Url = {
+  domain: string
+  originalUrl: string
+  // TODO: isInternal
+}
+
+type DataUrlGroup = {
+  domain: string
+  dataUrls: string[]
+}
+
+type Data = {
+  siteUrl: string
+  dataUrlGroups: DataUrlGroup[]
+}
+
+const Home: NextPage<{ data: Data[] }> = ({ data }) => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div className="flex min-h-screen flex-col items-center font-mono">
       <Head>
-        <title>Create Next App</title>
+        <title>dedata</title>
         <link rel="icon" href="/favicon.ico" />
+        <script
+          data-token="VLESW6URT5L5"
+          async
+          src="https://cdn.splitbee.io/sb.js"
+        ></script>
       </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
+      <main className="flex w-full flex-1 items-center sm:w-4/5 lg:w-1/2">
+        <div className="w-full">
+          <div className="">
+            <p className="bg-gradient-to-tr from-purple-600 to-blue-600 bg-clip-text text-6xl font-bold text-transparent">
+              dedata
             </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
+            <p className="mt-5 text-xl">
+              Understand contracts{' '}
+              <span className="font-bold text-purple-600">easily</span>
             </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+            <div>
+              {data.map((x) => (
+                <Protocol siteUrl={x.siteUrl} dataUrlGroups={x.dataUrlGroups} />
+              ))}
+            </div>
+          </div>
         </div>
       </main>
 
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+      <footer className="flex h-16 w-full items-center justify-center border-t">
+        By&nbsp;
+        <a className="text-purple-600" href="https://github.com/0xbe1">
+          @0xbe1
+        </a>
+        &nbsp;
+        <a href="https://github.com/0xbe1/miniscan">
+          <img src="github.svg" alt="GitHub" className="h-6" />
+        </a>
+        &nbsp;|&nbsp;Questions?&nbsp;
+        <a href="https://discord.gg/u5KUjNZ8wy">
+          <img src="discord.svg" alt="Discord" className="h-6" />
+        </a>
+        &nbsp;
+        <a href="https://twitter.com/_0xbe1/status/1511638106554134530">
+          <img src="twitter.svg" alt="Twitter" className="h-6" />
+        </a>
+        &nbsp;
+        <a href="https://www.reddit.com/r/thegraph/comments/txi4c6/announcing_startblock_find_a_contracts_startblock/">
+          <img src="reddit.svg" alt="Reddit" className="h-6" />
+        </a>
+        &nbsp;|&nbsp;Powered by&nbsp;
+        <a href="https://etherscan.io/">
+          <img src="etherscan.svg" alt="Etherscan" className="h-6" />
         </a>
       </footer>
     </div>
   )
+}
+
+const Protocol = ({ siteUrl, dataUrlGroups }: Data) => {
+  return (
+    <div>
+      <div className="text-red-500">{siteUrl}</div>
+      {dataUrlGroups.map((g) => (
+        <Group domain={g.domain} dataUrls={g.dataUrls} />
+      ))}
+    </div>
+  )
+}
+
+const Group = ({ domain, dataUrls }: DataUrlGroup) => {
+  return (
+    <div>
+      <div>- {domain}</div>
+      {dataUrls.map((url) => (
+        <div>&nbsp;&nbsp;- {url}</div>
+      ))}
+    </div>
+  )
+}
+
+export async function getStaticProps() {
+  const result = await getInterceptedRequestsByUrls(SITES)
+  const x = Object.entries(result)
+    .map(([url, intercepted]) => {
+      const filterInIntercepted = intercepted.filter(
+        (x) => !IGNORE_LIST.some((y) => getDomain(x).endsWith(y))
+      )
+      return [url, filterInIntercepted] as [string, string[]]
+    })
+    .map(([url, intercepted]) => {
+      const dataUrlGroups = intercepted.reduce<DataUrlGroup[]>((acc, curr) => {
+        const domain = getDomain(curr)
+        const dataUrlGroup = acc.find((x) => x.domain === domain)
+        if (dataUrlGroup === undefined) {
+          acc.push({ domain, dataUrls: [curr] })
+        } else {
+          dataUrlGroup.dataUrls.push(curr)
+        }
+        return acc
+      }, [] as DataUrlGroup[])
+
+      return { siteUrl: url, dataUrlGroups }
+    })
+
+  return {
+    props: {
+      data: x,
+    },
+  }
+}
+
+async function getInterceptedRequestsByUrls(
+  urls: string[]
+): Promise<{ [url: string]: string[] }> {
+  const promises = urls.map((url) => getInterceptedRequestsByUrl(url))
+  const results = await Promise.allSettled(promises)
+  const map: { [url: string]: string[] } = {}
+  results.forEach((result) => {
+    if (result.status === 'fulfilled') {
+      map[result.value.url] = result.value.intercepted
+    } else {
+      console.error('failed to get intercepted: %s', result.reason)
+    }
+  })
+  return map
+}
+
+async function getInterceptedRequestsByUrl(
+  url: string
+): Promise<{ url: string; intercepted: string[] }> {
+  const result: string[] = []
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.setRequestInterception(true)
+  page.on('request', (interceptedRequest) => {
+    if (interceptedRequest.isInterceptResolutionHandled()) {
+      return
+    }
+    if (
+      ABORT_RESOURCE_SUFFIXES.some((suffix) =>
+        interceptedRequest.url().endsWith(suffix)
+      )
+    ) {
+      interceptedRequest.abort()
+    } else {
+      // console.log("----")
+      // console.log(interceptedRequest.resourceType())
+      // console.log(interceptedRequest.url())
+      // console.log(interceptedRequest.method())
+      if (
+        interceptedRequest.resourceType() === 'fetch' ||
+        interceptedRequest.resourceType() === 'xhr'
+      ) {
+        result.push(interceptedRequest.url())
+      }
+      interceptedRequest.continue()
+    }
+  })
+  await page.goto(url, { waitUntil: 'networkidle0' })
+  await browser.close()
+  return { url, intercepted: Array.from(new Set(result)) }
+}
+
+function getDomain(url: string): string {
+  let domain = new URL(url)
+  return domain.hostname.replace('www.', '')
 }
 
 export default Home
