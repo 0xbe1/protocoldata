@@ -2,7 +2,12 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import puppeteer from 'puppeteer'
 
-const IGNORE_LIST = ['google-analytics.com', 'doubleclick.net', 'sentry.io']
+const IGNORE_LIST = [
+  'google-analytics.com',
+  'doubleclick.net',
+  'sentry.io',
+  'unpkg.com',
+]
 
 const SITES = [
   'https://info.uniswap.org/',
