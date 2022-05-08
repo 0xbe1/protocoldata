@@ -55,11 +55,11 @@ const Home: NextPage<{ data: Data[] }> = ({ data }) => {
       <Head>
         <title>Protocol Data</title>
         <link rel="icon" href="/favicon.ico" />
-        {/* <script
-          data-token="VLESW6URT5L5"
+        <script
+          data-token="HTBXBVJJCQG0"
           async
           src="https://cdn.splitbee.io/sb.js"
-        ></script> */}
+        ></script>
       </Head>
 
       <main className="flex w-full flex-1 items-center sm:w-4/5 lg:w-1/2">
