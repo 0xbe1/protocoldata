@@ -29,12 +29,6 @@ const ABORT_RESOURCE_SUFFIXES: string[] = [
   '.ico',
 ]
 
-type Url = {
-  domain: string
-  originalUrl: string
-  // TODO: isInternal
-}
-
 type DataUrlGroup = {
   domain: string
   dataUrls: string[]
@@ -108,18 +102,26 @@ const Home: NextPage<{ data: Data[] }> = ({ data }) => {
 }
 
 const Protocol = ({ siteUrl, dataUrlGroups }: Data) => {
+  const siteSecondLevelDomain = new URL(siteUrl).hostname
+    .split('.')
+    .slice(-2)
+    .join('.')
   return (
     <div>
       <div className="text-red-500">{siteUrl}</div>
-      {dataUrlGroups.map((g) => (
-        // <Group domain={g.domain} dataUrls={g.dataUrls} />
-        <div>
-          <div>- {g.domain}</div>
-          {_.uniqBy(g.dataUrls, (url) => new URL(url).pathname).map((url) => (
-            <div>&nbsp;&nbsp;- {new URL(url).pathname}</div>
-          ))}
-        </div>
-      ))}
+      {dataUrlGroups
+        .filter(
+          (g) =>
+            g.domain.split('.').slice(-2).join('.') !== siteSecondLevelDomain
+        )
+        .map((g) => (
+          <div>
+            <div>- {g.domain}</div>
+            {_.uniqBy(g.dataUrls, (url) => new URL(url).pathname).map((url) => (
+              <div>&nbsp;&nbsp;- {new URL(url).pathname}</div>
+            ))}
+          </div>
+        ))}
     </div>
   )
 }
