@@ -69,7 +69,7 @@ const Home: NextPage<{ data: Data[] }> = ({ data }) => {
               Protocol Data
             </p>
             <p className="mt-5 text-xl">
-              APIs that provide data for your fav protocols.
+              APIs that power data dashboards of your fav protocols.
             </p>
             <div>
               {data.map((x) => (
