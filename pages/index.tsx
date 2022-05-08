@@ -10,15 +10,16 @@ const IGNORE_LIST = [
   'unpkg.com',
 ]
 
-const SITES = [
-  'https://info.uniswap.org/',
-  'https://pancakeswap.finance/info',
-  'https://curve.fi/combinedstats',
-  'https://app.anchorprotocol.com/',
-  'https://www.convexfinance.com/stake',
-  'https://app.aave.com/markets/',
-  'https://compound.finance/markets',
-]
+const SITES: { [url: string]: string } = {
+  'https://info.uniswap.org': 'Uniswap V3',
+  'https://v2.info.uniswap.org': 'Uniswap V2',
+  'https://pancakeswap.finance/info': 'PancakeSwap',
+  'https://curve.fi/combinedstats': 'Curve',
+  'https://app.anchorprotocol.com': 'Anchor',
+  'https://www.convexfinance.com/stake': 'Convex',
+  'https://app.aave.com/markets': 'Aave V3',
+  'https://compound.finance/markets': 'Compound',
+}
 
 // Do NOT include .js otherwise data requests are not intercepted
 const ABORT_RESOURCE_SUFFIXES: string[] = [
@@ -108,7 +109,9 @@ const Protocol = ({ siteUrl, dataUrlGroups }: Data) => {
     .join('.')
   return (
     <div>
-      <div className="text-red-500">{siteUrl}</div>
+      <div className="text-purple-600">
+        <span>{SITES[siteUrl]}</span> <a href={siteUrl}>🔗</a>
+      </div>
       {dataUrlGroups
         .filter(
           (g) =>
@@ -127,7 +130,7 @@ const Protocol = ({ siteUrl, dataUrlGroups }: Data) => {
 }
 
 export async function getStaticProps() {
-  const result = await getInterceptedRequestsByUrls(SITES)
+  const result = await getInterceptedRequestsByUrls(Object.keys(SITES))
   const data = Object.entries(result)
     .map(([url, intercepted]) => {
       const filterInIntercepted = intercepted.filter(
