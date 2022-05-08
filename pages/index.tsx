@@ -180,7 +180,9 @@ async function getInterceptedRequestsByUrl(
   url: string
 ): Promise<{ url: string; intercepted: string[] }> {
   const result: string[] = []
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox'],
+  })
   const page = await browser.newPage()
   await page.setRequestInterception(true)
   page.on('request', (interceptedRequest) => {
