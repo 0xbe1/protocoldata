@@ -53,7 +53,7 @@ const Home: NextPage<{ data: Data[] }> = ({ data }) => {
   return (
     <div className="flex min-h-screen flex-col items-center font-mono">
       <Head>
-        <title>dedata</title>
+        <title>Protocol Data</title>
         <link rel="icon" href="/favicon.ico" />
         {/* <script
           data-token="VLESW6URT5L5"
@@ -65,12 +65,11 @@ const Home: NextPage<{ data: Data[] }> = ({ data }) => {
       <main className="flex w-full flex-1 items-center sm:w-4/5 lg:w-1/2">
         <div className="w-full">
           <div className="">
-            <p className="bg-gradient-to-tr from-purple-600 to-blue-600 bg-clip-text text-6xl font-bold text-transparent">
-              dedata
+            <p className="mt-5 text-6xl font-bold text-purple-600">
+              Protocol Data
             </p>
             <p className="mt-5 text-xl">
-              Understand contracts{' '}
-              <span className="font-bold text-purple-600">easily</span>
+              APIs that provide data for your fav protocols.
             </p>
             <div>
               {data.map((x) => (
@@ -110,7 +109,7 @@ const Protocol = ({ siteUrl, dataUrlGroups }: Data) => {
     .join('.')
   return (
     <div>
-      <div className="text-purple-600">
+      <div className="my-5 text-2xl text-purple-600">
         <span>{SITES[siteUrl]}</span> <a href={siteUrl}>🔗</a>
       </div>
       {dataUrlGroups
