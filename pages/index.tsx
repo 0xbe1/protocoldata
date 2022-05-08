@@ -86,16 +86,12 @@ const Home: NextPage<{ data: Data[] }> = ({ data }) => {
           @0xbe1
         </a>
         &nbsp;
-        <a href="https://github.com/0xbe1/miniscan">
+        <a href="https://github.com/0xbe1/protocoldata">
           <img src="github.svg" alt="GitHub" className="h-6" />
         </a>
-        &nbsp;|&nbsp;Questions?&nbsp;
+        &nbsp;|&nbsp;Feedback?&nbsp;
         <a href="https://discord.gg/u5KUjNZ8wy">
           <img src="discord.svg" alt="Discord" className="h-6" />
-        </a>
-        &nbsp;
-        <a href="https://twitter.com/_0xbe1/status/1511638106554134530">
-          <img src="twitter.svg" alt="Twitter" className="h-6" />
         </a>
       </footer>
     </div>
