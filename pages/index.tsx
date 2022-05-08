@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import puppeteer from 'puppeteer'
+import _ from 'lodash'
 
 const IGNORE_LIST = [
   'google-analytics.com',
@@ -111,18 +112,13 @@ const Protocol = ({ siteUrl, dataUrlGroups }: Data) => {
     <div>
       <div className="text-red-500">{siteUrl}</div>
       {dataUrlGroups.map((g) => (
-        <Group domain={g.domain} dataUrls={g.dataUrls} />
-      ))}
-    </div>
-  )
-}
-
-const Group = ({ domain, dataUrls }: DataUrlGroup) => {
-  return (
-    <div>
-      <div>- {domain}</div>
-      {dataUrls.map((url) => (
-        <div>&nbsp;&nbsp;- {url}</div>
+        // <Group domain={g.domain} dataUrls={g.dataUrls} />
+        <div>
+          <div>- {g.domain}</div>
+          {_.uniqBy(g.dataUrls, (url) => new URL(url).pathname).map((url) => (
+            <div>&nbsp;&nbsp;- {new URL(url).pathname}</div>
+          ))}
+        </div>
       ))}
     </div>
   )
