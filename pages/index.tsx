@@ -11,14 +11,23 @@ const IGNORE_LIST = [
 ]
 
 const SITES: { [url: string]: string } = {
-  'https://info.uniswap.org': 'Uniswap V3',
-  'https://v2.info.uniswap.org': 'Uniswap V2',
-  'https://pancakeswap.finance/info': 'PancakeSwap',
+  // DEX
   'https://curve.fi/combinedstats': 'Curve',
+  'https://info.uniswap.org': 'Uniswap',
+  'https://pancakeswap.finance/info': 'PancakeSwap',
+  // 'https://dashboard.balancer.community': 'Balancer',
+  // 'https://app.sushi.com/analytics': 'SushiSwap',
+  'https://analytics.traderjoexyz.com': 'Trader Joe',
+  // Lending
   'https://app.anchorprotocol.com': 'Anchor',
-  'https://www.convexfinance.com/stake': 'Convex',
-  'https://app.aave.com/markets': 'Aave V3',
+  'https://app.aave.com/markets': 'Aave',
   'https://compound.finance/markets': 'Compound',
+  // Bridge
+  'https://anyswap.net/dashboard': 'Multichain',
+  // Yield
+  'https://www.convexfinance.com/stake': 'Convex',
+  // Yield Aggregator
+  'https://yearn.finance/#/vaults': 'Yearn',
 }
 
 // Do NOT include .js otherwise data requests are not intercepted
