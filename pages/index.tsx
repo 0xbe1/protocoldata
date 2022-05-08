@@ -130,7 +130,7 @@ const Group = ({ domain, dataUrls }: DataUrlGroup) => {
 
 export async function getStaticProps() {
   const result = await getInterceptedRequestsByUrls(SITES)
-  const x = Object.entries(result)
+  const data = Object.entries(result)
     .map(([url, intercepted]) => {
       const filterInIntercepted = intercepted.filter(
         (x) => !IGNORE_LIST.some((y) => getDomain(x).endsWith(y))
@@ -154,7 +154,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      data: x,
+      data,
     },
   }
 }
